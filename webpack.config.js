@@ -1,6 +1,11 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+// const OptimizeCssAssetWebpackPlugin = require("optimize-css-assets-webpack-plugin");
+// const TerserWebpackPlugin = require("terser-webpack-plugin");
+// const ImageminPlugin = require("imagemin-webpack");
 
 const isDev = process.env.NODE_ENV === "development";
 const isProd = !isDev;
@@ -11,37 +16,85 @@ const filename = (ext) =>
 module.exports = {
   context: path.resolve(__dirname, "src"),
   mode: "development",
-  entry: "./js/main.js",
+  // entry: "./js/main.js",
+  entry: "./ts/index.ts",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js", ".scss"],
+  },
   output: {
     filename: `./js/${filename("js")}`,
     path: path.resolve(__dirname, "dist"),
+    publicPath: "",
   },
+  devServer: {
+    historyApiFallback: true,
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
+    open: true,
+    compress: true,
+    hot: true,
+    port: 3001,
+  },
+  devtool: "inline-source-map",
   module: {
     rules: [
-      //   {
-      //     test: /\.scss$/i,
-      //     use: [
-      //       "style-loader",
-      //       {
-      //         loader: MiniCssExtractPlugin.loader,
-      //         options: {
-      //           esModule: false,
-      //         },
-      //       },
-      //       "css-loader",
-      //       "sass-loader",
-      //     ],
-      //   },
-      //   {
-      //     test: /\.js$/,
-      //     exclude: /node_modules/,
-      //     use: {
-      //       loader: "babel-loader",
-      //       options: {
-      //         presets: ["@babel/preset-env"],
-      //       },
-      //     },
-      //   },
+      {
+        test: /\.html$/,
+        loader: "html-loader",
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: isDev,
+            },
+          },
+          "css-loader",
+        ],
+        // use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.scss$/i,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: (resourcePath, context) => {
+                return path.relative(path.dirname(resourcePath), context) + "/";
+              },
+            },
+          },
+          "css-loader",
+          "sass-loader",
+        ],
+        // use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
+        },
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: "asset/resource",
+      },
     ],
   },
   plugins: [
@@ -52,7 +105,18 @@ module.exports = {
         collapseWhitespace: isProd,
       },
     }),
-    //     new MiniCssExtractPlugin(),
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: `./css/${filename("css")}`,
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, "src/assets"),
+          to: path.resolve(__dirname, "dist"),
+        },
+      ],
+    }),
   ],
   //   devServer: {
   //     port: 9999,
