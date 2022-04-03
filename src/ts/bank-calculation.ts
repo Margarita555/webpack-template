@@ -115,34 +115,33 @@ async function countBankTotalFunds() {
   }
 }
 
-// async function countClientsDebt(clientStatus: boolean) {
-//   try {
-//     let bank: IClient[] = fetchBank();
-//     let debtTotal: number = 0;
-//     for (let i: number = 0; i < bank.length; i++) {
-//       let flag: boolean =
-//         bank[i].isActive === clientStatus || !arguments.length;
+async function countClientsDebt(...args: boolean[]) {
+  try {
+    let bank: IClient[] = fetchBank();
+    let debtTotal: number = 0;
+    for (let i: number = 0; i < bank.length; i++) {
+      let flag: boolean = bank[i].isActive === args[0] || !args.length;
 
-//       for (let j: number = 0; j < bank[i].accounts.credit!.length; j++) {
-//         let account: ICredit = bank[i].accounts.credit![j];
-//         let debt: number = 0;
-//         if (flag && account.creditLimit > account.balance) {
-//           debt = account.creditLimit - account.balance;
-//         }
-//         let currency: string = account.currency;
-//         if (currency === "USD") {
-//           debtTotal += debt;
-//         } else {
-//           const exchangedDebt: number = await exchangeCurrency(debt, currency);
-//           debtTotal += exchangedDebt;
-//         }
-//       }
-//     }
-//     return debtTotal;
-//   } catch (error: any) {
-//     error({ text: "Error.Try again leter." });
-//   }
-// }
+      for (let j: number = 0; j < bank[i].accounts.credit!.length; j++) {
+        let account: ICredit = bank[i].accounts.credit![j];
+        let debt: number = 0;
+        if (flag && account.creditLimit > account.balance) {
+          debt = account.creditLimit - account.balance;
+        }
+        let currency: string = account.currency;
+        if (currency === "USD") {
+          debtTotal += debt;
+        } else {
+          const exchangedDebt: number = await exchangeCurrency(debt, currency);
+          debtTotal += exchangedDebt;
+        }
+      }
+    }
+    return debtTotal;
+  } catch (error: any) {
+    error({ text: "Error.Try again leter." });
+  }
+}
 
 function countDebtHolders(clientStatus: boolean): number {
   let bank: IClient[] = fetchBank();
