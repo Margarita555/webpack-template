@@ -19,7 +19,7 @@ module.exports = {
   // entry: "./js/main.js",
   entry: "./ts/index.ts",
   resolve: {
-    extensions: [".tsx", ".ts", ".js", ".scss"],
+    extensions: [".tsx", ".ts", ".js", ".scss", ".hbs"],
   },
   output: {
     filename: `./js/${filename("js")}`,
@@ -95,6 +95,7 @@ module.exports = {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: "asset/resource",
       },
+      { test: /\.hbs$/, loader: "handlebars-loader" },
     ],
   },
   plugins: [

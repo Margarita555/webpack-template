@@ -1,8 +1,9 @@
 import "../scss/main.scss";
 import "../index.html";
+import "../ts/bank";
+import "../ts/bank-calculation";
+import "../ts/refs";
 
-const dig: number = 132;
-console.log(dig);
 // {
 //   "compilerOptions": {
 //     "module": "commonjs",
