@@ -3,9 +3,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-// const OptimizeCssAssetWebpackPlugin = require("optimize-css-assets-webpack-plugin");
-// const TerserWebpackPlugin = require("terser-webpack-plugin");
-// const ImageminPlugin = require("imagemin-webpack");
 
 const isDev = process.env.NODE_ENV === "development";
 const isProd = !isDev;
@@ -54,7 +51,6 @@ module.exports = {
           },
           "css-loader",
         ],
-        // use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.scss$/i,
@@ -70,7 +66,6 @@ module.exports = {
           "css-loader",
           "sass-loader",
         ],
-        // use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         test: /\.tsx?$/,
@@ -119,9 +114,4 @@ module.exports = {
       ],
     }),
   ],
-  //   devServer: {
-  //     port: 9999,
-  //     open: true,
-  //     stats: "errors-only",
-  //   },
 };
