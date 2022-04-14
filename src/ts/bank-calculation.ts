@@ -30,7 +30,7 @@ interface IClient {
   };
 }
 
-export function fetchBank() {
+export function fetchBank(): IClient[] {
   let bank: IClient[] = [];
   let clients: string | null = localStorage.getItem("bank");
   if (clients !== null) {
@@ -61,7 +61,10 @@ interface IRates {
   [key: string]: number;
 }
 
-async function exchangeCurrency(balance: number, currency: string) {
+async function exchangeCurrency(
+  balance: number,
+  currency: string
+): Promise<number> {
   const rate: number = await fetchCurrencyRates(currency).then(
     (rates: IRates) => {
       return rates[`USD_${currency}`];
@@ -70,7 +73,7 @@ async function exchangeCurrency(balance: number, currency: string) {
   return (balance / 100) * rate;
 }
 
-async function countBankTotalFunds() {
+async function countBankTotalFunds(): Promise<number> {
   let bank: IClient[] = fetchBank();
   try {
     let debitTotal: number = 0;
@@ -115,7 +118,7 @@ async function countBankTotalFunds() {
   }
 }
 
-async function countClientsDebt(...args: boolean[]) {
+async function countClientsDebt(...args: boolean[]): Promise<number> {
   try {
     let bank: IClient[] = fetchBank();
     let debtTotal: number = 0;
